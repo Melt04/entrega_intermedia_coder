@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const PRODUCTS = [{ id: 1, title: "pepe", thumbnail: "1", price: "2" }];
+const PRODUCTS = require("../data");
 const { getLastId } = require("../helper");
 const { validateId, validateCreateProduct, validateUpdateProduct } = require("../middleware");
 
@@ -9,9 +9,11 @@ router.get("/", function (req, res) {
 });
 router.post("/", validateCreateProduct, (req, res) => {
   const { newProduct } = req;
+  const io = req.app.get("io");
   const lastId = getLastId(PRODUCTS) + 1;
   const product = { id: lastId, ...newProduct };
   PRODUCTS.push(product);
+  io.sockets.emit("update-products", PRODUCTS);
   res.status(201).json({ message: "Ok" });
 });
 router.get("/:id", validateId, function (req, res) {
@@ -41,5 +43,8 @@ router.put("/:id", validateId, validateUpdateProduct, (req, res) => {
     return res.status(200).json({ message: "Actualizado exitosamente" });
   }
   res.status(404).json({ error: "Producto no encontrado" });
+});
+router.get("/getPlantilla", (req, res) => {
+  res.sendFile("public/plantilla/productos.hbs");
 });
 module.exports = router;

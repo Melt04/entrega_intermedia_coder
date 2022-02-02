@@ -5,22 +5,18 @@
  */
 
 const app = require("../app");
-
 const http = require("http");
-
-/**
- * Get port from environment and store in Express.
- */
-
 const port = process.env.PORT || "8080";
+const { Server: IOServer } = require("socket.io");
+const PRODUCTS = require("../data");
 app.set("port", port);
-
 /**
  * Create HTTP server.
  */
 
 const server = http.createServer(app);
-
+const io = new IOServer(server);
+app.set("io", io);
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -63,6 +59,10 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
+io.on("connection", (socket) => {
+  console.log(`Usuario ${socket.id}`);
+  socket.emit("products", PRODUCTS);
+});
 function onListening() {
   console.log(`Escuchando en puerto ${port}`);
 }

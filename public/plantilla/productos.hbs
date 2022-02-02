@@ -1,0 +1,36 @@
+
+<div>
+    <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Titulo</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Imagen</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each products}}
+      <tr>
+      
+      <td>{{this.title}}</td>
+      <td>{{this.price}}</td>
+      <td><img  class=".img-fluid"src={{this.thumbnail}}> </td>
+    </tr>
+     {{/each}}
+
+    </tr>
+  </tbody>
+</table>
+{{!-- <ul>
+
+{{#each products}}
+<li>{{this.title}}</li>
+<li>{{this.thumbnail}}</li>
+<li>{{this.price}}</li>
+
+
+
+ {{/each}}
+</ul> --}}
+ 
+</div>
