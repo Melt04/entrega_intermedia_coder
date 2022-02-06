@@ -10,6 +10,7 @@ async function renderProductTable(products) {
 
 async function renderMessages(messages) {
   let allMessages = "";
+  /*  messages = JSON.parse(messages); */
   const data = await fetch("http://localhost:8080/plantilla/mensajes.hbs");
   const html = await data.text();
   const template = Handlebars.compile(html);
@@ -27,8 +28,8 @@ socket.on("messages", (data) => {
 const form = document.querySelector(".message_main_form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const mensaje = document.querySelector("#email_input").value;
-  const user = document.querySelector("#message_send").value;
+  const user = document.querySelector("#email_input").value;
+  const mensaje = document.querySelector("#message_send").value;
 
   socket.emit("new-message", { mensaje, user });
 });

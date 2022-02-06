@@ -9,18 +9,26 @@ const http = require("http");
 const port = process.env.PORT || "8080";
 const { Server: IOServer } = require("socket.io");
 const PRODUCTS = require("../data");
-const MENSAJES = [
-  {
-    user: "alanmdq@",
-    date: "31/12/12",
-    mensaje: "Hola",
-  },
-  {
-    user: "diie@",
-    date: "31/12/12",
-    mensaje: "adios",
-  },
-];
+let MENSAJES;
+const fs = require("fs");
+
+const readFile = async () => {
+  try {
+    const data = await fs.promises.readFile("./data/messages.json", "utf8");
+
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+const writeFile = async (messages) => {
+  try {
+    const data = await fs.promises.writeFile("./data/messages.json", messages, "utf8");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 app.set("port", port);
 /**
  * Create HTTP server.
@@ -35,7 +43,10 @@ app.set("io", io);
 
 server.listen(port);
 server.on("error", onError);
-server.on("listening", onListening);
+server.on("listening", async () => {
+  MENSAJES = JSON.parse(await readFile());
+  onListening();
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -75,11 +86,10 @@ io.on("connection", (socket) => {
   console.log(`Usuario ${socket.id}`);
   socket.emit("products", PRODUCTS);
   socket.emit("messages", MENSAJES);
-  socket.on("new-message", (data) => {
+  socket.on("new-message", async (data) => {
     date = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} `;
-
     MENSAJES.push({ ...data, date });
-
+    writeFile(JSON.stringify(MENSAJES));
     io.sockets.emit("messages", MENSAJES);
   });
 });
