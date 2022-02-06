@@ -10,7 +10,7 @@ input {
   margin: 1%;
 }
 button {
-  width: 10%;
+  width: 20%;
 }
 img {
   max-width: 20px;
@@ -19,4 +19,27 @@ img {
 table {
   margin: 0 auto;
   max-width: 50%;
+}
+.messageCenter__main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.message_main_form {
+  width: 30%;
+}
+h2 {
+  color: blue;
+}
+.message_user {
+  color: blue;
+  font-weight: 900;
+}
+.message_date {
+  color: brown;
+}
+.message_mensaje {
+  color: green;
+  font-family: cursive;
 }

@@ -17,7 +17,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-    <script src="./js/index.js"></script>
+
     <link rel="stylesheet" href="./css/style.css" />
     <title>Alta productos</title>
   </head>
@@ -34,5 +34,20 @@
     </form>
 
     <div id="product-table"></div>
+
+    <div class="messageCenter__main">
+      <h2>Centro de mensajes</h2>
+      <form class="message_main_form">
+        <label for="email_input">email</label>
+        <input type="email" id="email_input" required />
+        <hr />
+        <div id="message"></div>
+        <div>
+          <input type="text" id="message_send" placeholder="Ingrese  un mensaje.." />
+          <button class="btn btn-primary">Enviar!</button>
+        </div>
+      </form>
+    </div>
+    <script src="./js/index.js"></script>
   </body>
 </html>

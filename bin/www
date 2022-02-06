@@ -9,6 +9,18 @@ const http = require("http");
 const port = process.env.PORT || "8080";
 const { Server: IOServer } = require("socket.io");
 const PRODUCTS = require("../data");
+const MENSAJES = [
+  {
+    user: "alanmdq@",
+    date: "31/12/12",
+    mensaje: "Hola",
+  },
+  {
+    user: "diie@",
+    date: "31/12/12",
+    mensaje: "adios",
+  },
+];
 app.set("port", port);
 /**
  * Create HTTP server.
@@ -62,6 +74,14 @@ function onError(error) {
 io.on("connection", (socket) => {
   console.log(`Usuario ${socket.id}`);
   socket.emit("products", PRODUCTS);
+  socket.emit("messages", MENSAJES);
+  socket.on("new-message", (data) => {
+    date = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} `;
+
+    MENSAJES.push({ ...data, date });
+
+    io.sockets.emit("messages", MENSAJES);
+  });
 });
 function onListening() {
   console.log(`Escuchando en puerto ${port}`);
