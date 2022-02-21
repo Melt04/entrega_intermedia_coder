@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { validateId, validateCreateProduct, validateUpdateProduct } = require("../middleware");
 
-const { products } = require("../db/conection");
+const { products } = require("../db");
 
 router.get("/", async function (req, res) {
   const allProducts = await products.getAll();
