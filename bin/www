@@ -6,28 +6,21 @@
 
 const app = require("../app");
 const http = require("http");
+const knex = require("knex");
 const port = process.env.PORT || "8080";
 const { Server: IOServer } = require("socket.io");
-const PRODUCTS = require("../data");
-let MENSAJES;
-const fs = require("fs");
+const mariaDBOptions = require("../db/options/mariaDBOptions");
+const sqlite3Options = require("../db/options/sqlite3Options");
+const { createTableMessage, createTableProducts } = require("../db/helper");
+createTableProducts(knex(mariaDBOptions));
+createTableMessage(knex(sqlite3Options));
+const { message, products } = require("../db/conection");
 
-const readFile = async () => {
-  try {
-    const data = await fs.promises.readFile("./data/messages.json", "utf8");
+/* let MENSAJES; */
+/* const fs = require("fs");
 
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
-const writeFile = async (messages) => {
-  try {
-    const data = await fs.promises.writeFile("./data/messages.json", messages, "utf8");
-  } catch (e) {
-    console.log(e);
-  }
-};
+
+
 
 app.set("port", port);
 /**
@@ -44,7 +37,6 @@ app.set("io", io);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", async () => {
-  MENSAJES = JSON.parse(await readFile());
   onListening();
 });
 
@@ -70,7 +62,7 @@ function onError(error) {
       process.exit(1);
       break;
     case "EADDRINUSE":
-      console.error(bind + " is already in use");
+      console.error(bind + " is already  in use");
       process.exit(1);
       break;
     default:
@@ -82,15 +74,17 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log(`Usuario ${socket.id}`);
-  socket.emit("products", PRODUCTS);
-  socket.emit("messages", MENSAJES);
+  let sendMessages = await message.getAll();
+  let allProducts = await products.getAll();
+  console.log(allProducts);
+  socket.emit("products", allProducts);
+  socket.emit("messages", sendMessages);
   socket.on("new-message", async (data) => {
-    date = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} `;
-    MENSAJES.push({ ...data, date });
-    writeFile(JSON.stringify(MENSAJES));
-    io.sockets.emit("messages", MENSAJES);
+    await message.insert(data);
+    let sendMessages = await message.getAll();
+    io.sockets.emit("messages", sendMessages);
   });
 });
 function onListening() {

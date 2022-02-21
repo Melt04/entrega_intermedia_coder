@@ -3,20 +3,6 @@ class Contenedor {
   constructor(table, options) {
     this.table = table;
     this.db = knex(options);
-    this.#createTable();
-  }
-  async #createTable() {
-    try {
-      const exist = await this.db.schema.hasTable(this.table);
-      if (!exist) {
-        await this.db.schema.createTable(this.table, (t) => {
-          t.increments("id"), t.string("nombre"), t.string("modelo");
-        });
-      }
-    } catch (e) {
-      console.log("aca");
-      console.log(e.message);
-    }
   }
 
   async getAll() {
@@ -29,10 +15,10 @@ class Contenedor {
     }
   }
 
-  async insert(cars) {
+  async insert(data) {
     try {
-      const insertedCars = await this.db(this.table).insert(cars);
-      return insertedCars;
+      const insertedData = await this.db(this.table).insert(data);
+      return insertedData;
     } catch (e) {
       console.log(e);
       throw e;
@@ -40,8 +26,8 @@ class Contenedor {
   }
   async getById(id) {
     try {
-      const car = await this.db(this.table).select("*").where("id", "=", id);
-      return car;
+      const insertedData = await this.db(this.table).select("*").where("id", "=", id);
+      return insertedData;
     } catch (e) {
       console.log(e);
       throw e;
@@ -49,8 +35,17 @@ class Contenedor {
   }
   async deleteById(id) {
     try {
-      const deletedCar = await this.db(this.table).where("id", "=", id).del();
-      return deletedCar;
+      const deletedData = await this.db(this.table).where("id", "=", id).del();
+      return deletedData;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  async updateById(id, data) {
+    try {
+      const deletedData = await this.db(this.table).where("id", "=", id).update(data);
+      return deletedData;
     } catch (e) {
       console.log(e);
       throw e;

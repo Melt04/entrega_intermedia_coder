@@ -1,6 +1,8 @@
 const socket = io();
 
 async function renderProductTable(products) {
+  console.log("UPDATE");
+  console.log(products);
   const data = await fetch("http://localhost:8080/api/getPlantilla");
   const html = await data.text();
   var template = Handlebars.compile(html);
@@ -22,6 +24,7 @@ async function renderMessages(messages) {
 socket.on("products", (products) => renderProductTable(products));
 socket.on("update-products", (products) => renderProductTable(products));
 socket.on("messages", (data) => {
+  console.log(data);
   renderMessages(data);
 });
 const form = document.querySelector(".message_main_form");
