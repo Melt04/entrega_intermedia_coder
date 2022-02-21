@@ -3,7 +3,7 @@ const mariaDBOptions = {
   connection: {
     host: "127.0.0.1",
     user: "root",
-    database: "websocket",
+    database: "ecommerce",
   },
   pool: { min: 0, max: 7 },
 };

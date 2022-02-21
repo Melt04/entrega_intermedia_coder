@@ -1,8 +1,7 @@
-const knex = require("knex");
 class Contenedor {
-  constructor(table, options) {
+  constructor(table, db) {
     this.table = table;
-    this.db = knex(options);
+    this.db = db;
   }
 
   async getAll() {
