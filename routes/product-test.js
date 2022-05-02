@@ -7,7 +7,6 @@ router.get('/', (req, res) => {
     for (let i = 0; i < 5; i++) {
         products.push(generateRandomProduct(i))
     }
-
     res.json(products)
 })
 

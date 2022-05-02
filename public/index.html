@@ -40,14 +40,30 @@
       <form class="message_main_form">
         <label for="email_input">email</label>
         <input type="email" id="email_input" required />
-        <hr />
-        <div id="message"></div>
-        <div>
-          <input type="text" id="message_send" placeholder="Ingrese  un mensaje.." />
+        
+        
+        <div class="inputuser_main_form">
+          <label for="name_send">Nombre</label>
+          <input type="text" id="name_send" placeholder="Ingrese su nombre" />
+          <label for="lastname_send">Apellido</label>
+          <input type="text" id="lastname_send" placeholder="Ingrese su apellido" />
+          <label for="age_send">Edad</label>
+          <input type="text" id="age_send" placeholder="Ingrese su edad." />
+          <label for="alias_send">Alias</label>
+          <input type="text" id="alias_send" placeholder="Ingrese su alias2" />
+          <label for="avatar_send">Foto url</label>
+          <input type="text" id="avatar_send" placeholder="Ingrese url de su photo" />
+          <label for="message_send">Mensaje</label>
+          <input type="text" id="message_send" placeholder="Ingrese su mensaje" />
           <button class="btn btn-primary">Enviar!</button>
         </div>
+        <hr />
+        <div id="message"></div>
       </form>
+      
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
     <script src="./js/index.js"></script>
+    
   </body>
 </html>

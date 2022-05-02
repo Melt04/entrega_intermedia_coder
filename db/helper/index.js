@@ -16,7 +16,8 @@ createTableMessage = async (db) => {
     const exist = await db.schema.hasTable("mensajes");
     if (!exist) {
       await db.schema.createTable("mensajes", (t) => {
-        t.increments("id"), t.string("mensaje"), t.string("user"), t.timestamp("date").defaultTo(db.fn.now());
+        t.increments("id"), t.string("mensaje"), t.string("alias"), t.timestamp("date").defaultTo(db.fn.now()),
+          t.string("apellido")
       });
     }
   } catch (e) {

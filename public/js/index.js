@@ -30,9 +30,26 @@ socket.on("messages", (data) => {
 const form = document.querySelector(".message_main_form");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  const user = document.querySelector("#email_input").value;
-  const mensaje = document.querySelector("#message_send").value;
+  const email = document.querySelector("#email_input").value;
+  const message = document.querySelector("#message_send").value;
+  const name = document.querySelector("#name_send").value;
+  const age = document.querySelector("#age_send").value;
+  const alias = document.querySelector("#alias_send").value;
+  const lastname = document.querySelector("#lastname_send").value;
+  const avatar = document.querySelector("#avatar_send").value;
+  document.querySelector("#alias_send").value = "";
   document.querySelector("#email_input").value = "";
+  document.querySelector("#name_send").value = "";
+  document.querySelector("#lastname_send").value = "";
+  document.querySelector("#age_send").value = "";
+  document.querySelector("#avatar_send").value = "";
   document.querySelector("#message_send").value = "";
-  socket.emit("new-message", { mensaje, user });
+
+
+  socket.emit("new-message", {
+    author: {
+      id: email, name, age, lastname, avatar, alias
+    }, text: message
+  });
 });
+

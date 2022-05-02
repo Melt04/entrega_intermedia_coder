@@ -28,6 +28,12 @@ table {
 }
 .message_main_form {
   width: 30%;
+   display: flex;
+  flex-direction: column;
+}
+.inputuser_main_form{
+  display: flex;
+  flex-direction: column;
 }
 h2 {
   color: blue;

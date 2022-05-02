@@ -24,6 +24,11 @@
     "@faker-js/faker": "^6.2.0",
     "nodemon": "^2.0.15"
   },
+   "nodemonConfig": {
+    "ignore": [
+      "./db/messages/*.json"
+    ]
+  },
   "description": "Construccion de una api rest para productos",
   "main": "app.js",
   "repository": {
