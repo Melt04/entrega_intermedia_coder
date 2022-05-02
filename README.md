@@ -1,6 +1,6 @@
-# Desafio CoderHouse 05
+# Desafio CoderHouse 12
 
-Construccion de una api rest para productos
+Normalizacion de una api rest para productos y mensajes
 
 # Correr el proyecto
 
