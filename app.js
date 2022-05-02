@@ -4,19 +4,13 @@ const path = require("path");
 const app = express();
 
 const routerProducts = require("./routes/products");
+const routerProductTest = require('./routes/product-test')
 
-/* const Contenedor = require("./models/contenedor");
-const mariaDBOptions = require("./db/options/mariaDBOptions");
-const sqlite3Options = require("./db/options/sqlite3Options");
-const { createTableMessage, createTableProducts } = require("./db/helper");
-createTableProducts(knex(mariaDBOptions));
-createTableMessage(knex(sqlite3Options));
-const products = new Contenedor("productos", mariaDBOptions);
-const message = new Contenedor("mensajes", sqlite3Options); */
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/api/products-test", routerProductTest)
 app.get("/api/getPlantilla", (req, res) => {
   res.sendFile("public/plantilla/productos.hbs", { root: __dirname });
 });

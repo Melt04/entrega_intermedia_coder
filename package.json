@@ -21,6 +21,7 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.2.0",
     "nodemon": "^2.0.15"
   },
   "description": "Construccion de una api rest para productos",

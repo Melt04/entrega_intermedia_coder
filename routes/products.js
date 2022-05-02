@@ -16,6 +16,7 @@ router.post("/", validateCreateProduct, async (req, res) => {
   io.sockets.emit("update-products", allProducts);
   res.status(201).json({ message: "Ok" });
 });
+
 router.get("/:id", validateId, async function (req, res) {
   const { id } = req.params;
   const product = await products.getById(id);
@@ -34,6 +35,7 @@ router.delete("/:id", validateId, async function (req, res) {
     res.status(404).json({ error: "Producto no encontrado" });
   }
 });
+
 
 router.put("/:id", validateId, validateUpdateProduct, async (req, res) => {
   const { id } = req.params;
