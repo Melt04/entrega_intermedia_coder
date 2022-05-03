@@ -1,4 +1,14 @@
 const socket = io();
+const normalize = normalizr.normalize
+const denormalize = normalizr.denormalize
+const schema = normalizr.schema
+const authorSchema = new schema.Entity('author')
+const messageSchema = new schema.Entity('message', {
+  author: authorSchema,
+})
+const messagesSchema = new schema.Entity('messages', {
+  messages: [messageSchema]
+})
 
 async function renderProductTable(products) {
   console.log("UPDATE");
@@ -10,7 +20,8 @@ async function renderProductTable(products) {
   table.innerHTML = template({ products });
 }
 
-async function renderMessages(messages) {
+async function renderMessages({ messages }) {
+
   let allMessages = "";
   const data = await fetch("http://localhost:8080/plantilla/mensajes.hbs");
   const html = await data.text();
@@ -24,8 +35,8 @@ async function renderMessages(messages) {
 socket.on("products", (products) => renderProductTable(products));
 socket.on("update-products", (products) => renderProductTable(products));
 socket.on("messages", (data) => {
-  console.log(data);
-  renderMessages(data);
+  const denormalizedData = denormalize(data.result, messagesSchema, data.entities)
+  renderMessages(denormalizedData);
 });
 const form = document.querySelector(".message_main_form");
 form.addEventListener("submit", (e) => {

@@ -15,8 +15,8 @@ const { createTableMessage, createTableProducts } = require("../db/helper");
 createTableProducts(knex(mariaDBOptions));
 createTableMessage(knex(sqlite3Options));
 const { message, products } = require("../db");
-const messagesJson = require('../db/messages/messages.json')
-console.log(messagesJson)
+const { normalizeSchemaMessage } = require('../db/messages/normalize');
+const util = require('util');
 
 app.set("port", port);
 /**
@@ -71,15 +71,15 @@ function onError(error) {
  */
 
 io.on("connection", async (socket) => {
-  console.log(`Usuario ${socket.id}`);
-  let sendMessages = await message.getAll();
+  let sendMessages = normalizeSchemaMessage(await message.getAll());
   let allProducts = await products.getAll();
   socket.emit("products", allProducts);
   socket.emit("messages", sendMessages);
   socket.on("new-message", async (data) => {
     await message.insert(data);
     let sendMessages = await message.getAll();
-    io.sockets.emit("messages", sendMessages);
+    console.log(util.inspect(normalizeSchemaMessage(sendMessages), false, 12, true))
+    io.sockets.emit("messages", normalizeSchemaMessage(sendMessages));
   });
 });
 function onListening() {

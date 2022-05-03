@@ -1,4 +1,11 @@
 const fs = require('fs/promises')
+const util = require('util')
+const { getMaxId } = require('../helper/index')
+
+
+
+
+
 class FileContainer {
     constructor(fileRoute) {
         this.fileRoute = fileRoute
@@ -11,8 +18,9 @@ class FileContainer {
                 const parsedData = JSON.parse(data)
                 return parsedData
             }
-            return new Array()
+            return new { id: 'mensajes', messages: [] }
         } catch (e) {
+
             throw new Error(e.message)
         }
     }
@@ -21,7 +29,9 @@ class FileContainer {
         try {
 
             const allData = await this.getAll()
-            allData.push(data)
+            const maxId = getMaxId(allData.messages)
+            const newMessage = { id: maxId, ...data }
+            allData.messages.push(newMessage)
             const insertedData = await fs.writeFile(this.fileRoute, JSON.stringify(allData))
             return insertedData
         } catch (e) {
