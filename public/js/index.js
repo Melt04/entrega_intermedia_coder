@@ -36,6 +36,13 @@ socket.on("products", (products) => renderProductTable(products));
 socket.on("update-products", (products) => renderProductTable(products));
 socket.on("messages", (data) => {
   const denormalizedData = denormalize(data.result, messagesSchema, data.entities)
+  const dataSize = JSON.stringify(data).length
+
+  const denormalizeDataSize = JSON.stringify(denormalizedData).length
+  console.log(dataSize)
+  console.log(denormalizeDataSize)
+  const compresion = ((denormalizeDataSize - dataSize) * 100) / denormalizeDataSize
+  document.querySelector("H2").innerText = `Centro de Mensajes(% de compresion ${compresion})`
   renderMessages(denormalizedData);
 });
 const form = document.querySelector(".message_main_form");

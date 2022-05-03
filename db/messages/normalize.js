@@ -1,6 +1,7 @@
 const normalizr = require('normalizr')
 const normalize = normalizr.normalize
 const schema = normalizr.schema
+const util = require('util')
 
 const normalizeSchemaMessage = (originalSchema) => {
 
@@ -11,7 +12,12 @@ const normalizeSchemaMessage = (originalSchema) => {
     const messagesSchema = new schema.Entity('messages', {
         messages: [messageSchema]
     })
+    const pruebaSchema = new schema.Entity('messages', {
+        author: [authorSchema]
+    })
     const normalizedMessage = normalize(originalSchema, messagesSchema)
+    const obj = normalize(originalSchema, pruebaSchema)
+
     return normalizedMessage
 
 }

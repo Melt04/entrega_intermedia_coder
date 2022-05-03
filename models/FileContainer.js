@@ -1,11 +1,6 @@
 const fs = require('fs/promises')
-const util = require('util')
+
 const { getMaxId } = require('../helper/index')
-
-
-
-
-
 class FileContainer {
     constructor(fileRoute) {
         this.fileRoute = fileRoute
