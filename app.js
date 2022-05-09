@@ -8,20 +8,30 @@ const routerProducts = require("./routes/products")
 const routerSession = require('./routes/session')
 const routerProductTest = require('./routes/product-test')
 const mainRouter = require('./routes/main')
+const mongoStore = require('connect-mongo')
+const mongoOptions = { useNewUrlParser: true, useUnifiedTopology: true }
+const dotenv = require('dotenv')
 
 app.use(express.urlencoded({ extended: true }));
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 app.use(express.json())
+dotenv.config()
+console.log(process.env.URL_MONGO)
+
 app.use(cookieParser())
 
 app.use(session({
+  store: mongoStore.create({
+    mongoUrl: `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.vrmey.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+    mongoOptions: mongoOptions
+  }),
   secret: 'my secret',
   resave: true,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    maxAge: 1000 * 60 * 4,
+    maxAge: 1000 * 60 * 10,
   }
 }))
 
@@ -29,15 +39,6 @@ app.use(session({
 app.use(express.static(path.join(__dirname, "public")))
 
 app.use('/', mainRouter)
-/* app.get("/super", (req, res) => {
-  res.render('public', { user: req.session.name })
-}) */
-/* app.get('/', function (req, res) {
-  if (req.session.name) {
-    return res.sendFile("main.html", { root: "public" });
-  }
-  return res.sendFile("login.html", { root: "public" })
-}); */
 app.use("/api/products-test", routerProductTest)
 app.get("/api/getPlantilla", (req, res) => {
   res.sendFile("public/plantilla/productos.hbs", { root: __dirname })
@@ -48,7 +49,11 @@ app.use("/api/products", routerProducts)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   if (req.originalUrl != '/http') {
-    next(createError(404))
+    if (req.session.name) {
+      return res.redirect('/products')
+    }
+    return res.redirect("/login")
+
   }
 
 })
