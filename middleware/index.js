@@ -42,23 +42,8 @@ validateUpdateProduct = (req, res, next) => {
 isAuthMiddleware = (req, res, next) => {
   if (req.session.name) {
     return next()
-
   }
-  return res.redirect('/')
-}
-authPublicDirectory = (req, res, next) => {
-  if (!req.originalUrl.includes("/login.html") && !req.originalUrl.includes("/main.html")) {
-    return next()
-  }
-  if (!req.session.name) {
-    console.log("no session")
-    return res.sendFile("login.html", { root: "public" });
-  }
-  if (!req.originalUrl.includes("/main.html")) {
-    console.log("2")
-    return res.sendFile("main.html", { root: "public" })
-  }
-  return next()
+  return res.redirect('/login')
 }
 
-module.exports = { validateId, validateCreateProduct, validateUpdateProduct, isAuthMiddleware, authPublicDirectory };
+module.exports = { validateId, validateCreateProduct, validateUpdateProduct, isAuthMiddleware };

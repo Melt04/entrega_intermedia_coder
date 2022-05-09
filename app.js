@@ -5,10 +5,13 @@ const app = express()
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
 const routerProducts = require("./routes/products")
+const routerSession = require('./routes/session')
 const routerProductTest = require('./routes/product-test')
-const { isAuthMiddleware, authPublicDirectory } = require('./middleware')
-app.use(express.urlencoded({ extended: true }));
+const mainRouter = require('./routes/main')
 
+app.use(express.urlencoded({ extended: true }));
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hbs')
 app.use(express.json())
 app.use(cookieParser())
 
@@ -23,27 +26,24 @@ app.use(session({
 }))
 
 
-app.use(authPublicDirectory, express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")))
 
-/* app.use('/api/testcookie', isAuthMiddleware, (req, res) => {
-  res.json(req.session)
+app.use('/', mainRouter)
+/* app.get("/super", (req, res) => {
+  res.render('public', { user: req.session.name })
 }) */
-
-app.get('/', function (req, res) {
+/* app.get('/', function (req, res) {
   if (req.session.name) {
     return res.sendFile("main.html", { root: "public" });
   }
   return res.sendFile("login.html", { root: "public" })
-});
+}); */
 app.use("/api/products-test", routerProductTest)
 app.get("/api/getPlantilla", (req, res) => {
   res.sendFile("public/plantilla/productos.hbs", { root: __dirname })
 })
-app.post("/api/session", (req, res) => {
+app.use("/api/session", routerSession)
 
-  req.session.name = req.body.name
-  return res.redirect("/main.html")
-})
 app.use("/api/products", routerProducts)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -51,11 +51,12 @@ app.use(function (req, res, next) {
     next(createError(404))
   }
 
-
 })
 
 app.use(function (err, req, res, next) {
+
   res.locals.message = err.message
+  console.log(err.message)
   res.locals.error = req.app.get("env") === "development" ? err : {}
   res.status(err.status || 500)
   res.send("Page Not Found")

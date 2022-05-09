@@ -1,3 +1,4 @@
+
 const socket = io();
 const normalize = normalizr.normalize
 const denormalize = normalizr.denormalize
@@ -9,10 +10,14 @@ const messageSchema = new schema.Entity('message', {
 const messagesSchema = new schema.Entity('messages', {
   messages: [messageSchema]
 })
-
+async function logOut() {
+  const response = await fetch("http://localhost:8080/api/session/logout", { method: "POST" });
+  const data = await response.json()
+  console.log(data)
+}
+const logoutButton = document.querySelector("#bLogout")
+logoutButton.addEventListener('click', logOut)
 async function renderProductTable(products) {
-  console.log("UPDATE");
-  console.log(products);
   const data = await fetch("http://localhost:8080/api/getPlantilla");
   const html = await data.text();
   var template = Handlebars.compile(html);
