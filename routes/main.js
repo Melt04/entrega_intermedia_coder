@@ -9,6 +9,7 @@ router.get('/login', (req, res) => {
     return res.render('login')
 })
 router.get('/products', isAuthMiddleware, (req, res) => {
+
     res.render('public', { user: req.session.name })
 })
 

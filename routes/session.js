@@ -5,6 +5,14 @@ router.post("/", (req, res) => {
     return res.redirect("/products")
 })
 router.post("/logout", (req, res) => {
-    res.json({ message: 'ok' })
+    const { name } = req.session
+    console.log(name)
+    req.session.destroy(err => {
+        if (err) {
+            throw new Error(err)
+        }
+        console.log("destroy")
+        return res.render("logout", { user: name })
+    })
 })
 module.exports = router;

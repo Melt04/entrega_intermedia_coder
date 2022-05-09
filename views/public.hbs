@@ -16,7 +16,10 @@
   <link rel="stylesheet" href="./css/style.css" />
   <div class="banner-user">
     <h1>Bienvenido{{user}} </h1>
-    <button id="bLogout">Salir</button>
+    <form action="http://localhost:8080/api/session/logout" method="POST">
+            <button id="bLogout">Salir</button>
+    </form>
+    
   </div>
 
   <title>Alta productos</title>
