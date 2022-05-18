@@ -4,37 +4,47 @@
  * Module dependencies.
  */
 
-const app = require("../app");
-const http = require("http");
-const knex = require("knex");
-const port = process.env.PORT || "8080";
-const { Server: IOServer } = require("socket.io");
-const mariaDBOptions = require("../db/options/mariaDBOptions");
-const sqlite3Options = require("../db/options/sqlite3Options");
-const { createTableMessage, createTableProducts } = require("../db/helper");
-createTableProducts(knex(mariaDBOptions));
-createTableMessage(knex(sqlite3Options));
-const { message, products } = require("../db");
-const { normalizeSchemaMessage } = require('../db/messages/normalize');
-const util = require('util');
+const app = require('../app')
+const http = require('http')
+const knex = require('knex')
+const port = process.env.PORT || '8080'
+const { Server: IOServer } = require('socket.io')
+const mariaDBOptions = require('../db/options/mariaDBOptions')
+const sqlite3Options = require('../db/options/sqlite3Options')
+const { createTableMessage, createTableProducts } = require('../db/helper')
+createTableProducts(knex(mariaDBOptions))
+createTableMessage(knex(sqlite3Options))
+const { message, products } = require('../db')
+const { normalizeSchemaMessage } = require('../db/messages/normalize')
+const util = require('util')
+const mongoose = require('mongoose')
+const User = require('../models/User')
 
-app.set("port", port);
+app.set('port', port)
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
-const io = new IOServer(server);
-app.set("io", io);
+const server = http.createServer(app)
+const io = new IOServer(server)
+app.set('io', io)
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on("error", onError);
-server.on("listening", async () => {
-  onListening();
-});
+server.listen(port)
+server.on('error', onError)
+server.on('listening', async () => {
+  try {
+    await mongoose.connect(
+      `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.vrmey.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+    )
+
+    onListening()
+  } catch (e) {
+    console.log(e)
+  }
+})
 
 /**
  * Normalize a port into a number, string, or false.
@@ -44,25 +54,25 @@ server.on("listening", async () => {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
-  if (error.syscall !== "listen") {
-    throw error;
+function onError (error) {
+  if (error.syscall !== 'listen') {
+    throw error
   }
 
-  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already  in use");
-      process.exit(1);
-      break;
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges')
+      process.exit(1)
+      break
+    case 'EADDRINUSE':
+      console.error(bind + ' is already  in use')
+      process.exit(1)
+      break
     default:
-      throw error;
+      throw error
   }
 }
 
@@ -70,18 +80,20 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-io.on("connection", async (socket) => {
-  let sendMessages = normalizeSchemaMessage(await message.getAll());
-  let allProducts = await products.getAll();
-  socket.emit("products", allProducts);
-  socket.emit("messages", sendMessages);
-  socket.on("new-message", async (data) => {
-    await message.insert(data);
-    let sendMessages = await message.getAll();
-    console.log(util.inspect(normalizeSchemaMessage(sendMessages), false, 12, true))
-    io.sockets.emit("messages", normalizeSchemaMessage(sendMessages));
-  });
-});
-function onListening() {
-  console.log(`Escuchando en puerto ${port}`);
+io.on('connection', async socket => {
+  let sendMessages = normalizeSchemaMessage(await message.getAll())
+  let allProducts = await products.getAll()
+  socket.emit('products', allProducts)
+  socket.emit('messages', sendMessages)
+  socket.on('new-message', async data => {
+    await message.insert(data)
+    let sendMessages = await message.getAll()
+    console.log(
+      util.inspect(normalizeSchemaMessage(sendMessages), false, 12, true)
+    )
+    io.sockets.emit('messages', normalizeSchemaMessage(sendMessages))
+  })
+})
+function onListening () {
+  console.log(`Escuchando en puerto ${port}`)
 }

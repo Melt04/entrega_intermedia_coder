@@ -12,15 +12,20 @@
 
 <body>
 
-  <form method="POST" action="http://localhost:8080/api/session">
+  <form method="POST" action="http://localhost:8080/products">
     <div class="mb-3">
-      <label>First Name</label>
-      <input type="text" name="name" id="name" class="form-control" />
+      <label>Email</label>
+      <input type="text" name="username" id="name" class="form-control" />
+      <label>Password</label>
+      <input type="text" name="password" id="name" class="form-control" />
     </div>
     <div class="mb-3">
-      <input type="submit" name="submit_button" class="btn btn-primary" value="Add" />
+      <input type="submit" name="submit_button" class="btn btn-primary" value="Ingresar" />
     </div>
+
   </form>
+  <a href="/register" class="btn btn-primary">Registrarse</a>
+  
 
 </body>
 

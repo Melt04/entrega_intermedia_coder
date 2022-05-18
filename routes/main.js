@@ -1,16 +1,45 @@
 const express = require('express')
 const router = express.Router()
-const { isAuthMiddleware } = require('../middleware/index')
+const passport = require('passport')
+
+router.get('/faillogin', (req, res) => {
+  res.render('error.hbs', { error: 'LOGIN' })
+})
+router.get('/failregister', (req, res) => {
+  res.render('error.hbs', { error: 'REGISTER' })
+})
+router.get('/register', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.render('public', { user: req.user.username })
+  }
+
+  return res.render('register')
+})
+router.post(
+  '/register',
+  passport.authenticate('signup', { failureRedirect: '/failregister' }),
+  (req, res) => {
+    return res.render('register')
+  }
+)
 
 router.get('/login', (req, res) => {
-    if (req.session.name) {
-        return res.redirect('/products')
-    }
-    return res.render('login')
+  if (req.isAuthenticated()) {
+    return res.render('public', { user: req.user.username })
+  }
+  return res.render('login')
 })
-router.get('/products', isAuthMiddleware, (req, res) => {
-
-    res.render('public', { user: req.session.name })
+router.post(
+  '/products',
+  passport.authenticate('login', {
+    failureRedirect: '/faillogin'
+  }),
+  (req, res) => {
+    res.render('public', { user: req.user.username })
+  }
+)
+router.get('/products', (req, res, next) => {
+  return res.render('public', { user: req.user.username })
 })
 
 module.exports = router
