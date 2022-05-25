@@ -7,13 +7,17 @@
 const app = require('../app')
 const http = require('http')
 const knex = require('knex')
-const port = process.env.PORT || '8080'
+
 const { Server: IOServer } = require('socket.io')
 const mariaDBOptions = require('../db/options/mariaDBOptions')
 const sqlite3Options = require('../db/options/sqlite3Options')
 const { createTableMessage, createTableProducts } = require('../db/helper')
 createTableProducts(knex(mariaDBOptions))
 createTableMessage(knex(sqlite3Options))
+const yarg = require('yargs/yargs')(process.argv.slice(2))
+const PORT = yarg.argv.PORT
+const port = PORT || '8080'
+
 const { message, products } = require('../db')
 const { normalizeSchemaMessage } = require('../db/messages/normalize')
 const util = require('util')
@@ -96,4 +100,6 @@ io.on('connection', async socket => {
 })
 function onListening () {
   console.log(`Escuchando en puerto ${port}`)
+  console.log(yarg.argv.PORT)
+  console.log(PORT)
 }
