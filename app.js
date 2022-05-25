@@ -8,6 +8,7 @@ const routerProducts = require('./routes/products')
 const routerSession = require('./routes/session')
 const routerProductTest = require('./routes/product-test')
 const mainRouter = require('./routes/main')
+const randomRouter = require('./routes/random')
 const mongoStore = require('connect-mongo')
 const mongoOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const dotenv = require('dotenv')
@@ -58,6 +59,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 app.use('/', mainRouter)
+app.use('/api/random', randomRouter)
 app.use('/api/products-test', routerProductTest)
 app.get('/api/getPlantilla', (req, res) => {
   res.sendFile('public/plantilla/productos.hbs', { root: __dirname })
