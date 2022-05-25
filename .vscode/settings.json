@@ -2,5 +2,8 @@
     "editor.defaultFormatter": "ms-vscode.js-debug",
     "[javascript]": {
         "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    },
+    "[handlebars]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
     }
 }

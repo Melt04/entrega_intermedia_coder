@@ -1,7 +1,23 @@
 const express = require('express')
 const router = express.Router()
 const passport = require('passport')
+const yarg = require('yargs/yargs')(process.argv.slice(2))
 
+router.get('/info', (req, res) => {
+  const so = process.platform
+  const argv = yarg.argv
+  const argvkeys = Object.keys(argv)
+  const arg = argvkeys.map(key => {
+    return argv[key]
+  })
+  const version = process.version
+  const path = process.execPath
+  const pid = process.pid
+  const folder = process.cwd()
+  const { rss: memory } = process.memoryUsage()
+
+  res.render('info.hbs', { so, arg, version, path, pid, folder, memory })
+})
 router.get('/faillogin', (req, res) => {
   res.render('error.hbs', { error: 'LOGIN' })
 })
