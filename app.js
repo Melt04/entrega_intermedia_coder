@@ -76,7 +76,10 @@ app.use(function (req, res, next) {
     return res.redirect('/login')
   }
 })
-
+app.use('*', (req, res) => {
+  const url = req.originalUrl
+  res.send(url)
+})
 app.use(function (err, req, res, next) {
   res.locals.message = err.message
   console.log(err.message)

@@ -15,8 +15,18 @@ router.get('/info', (req, res) => {
   const pid = process.pid
   const folder = process.cwd()
   const { rss: memory } = process.memoryUsage()
+  const numCpus = require('os').cpus().length
 
-  res.render('info.hbs', { so, arg, version, path, pid, folder, memory })
+  res.render('info.hbs', {
+    so,
+    arg,
+    version,
+    path,
+    pid,
+    folder,
+    memory,
+    numCpus
+  })
 })
 router.get('/faillogin', (req, res) => {
   res.render('error.hbs', { error: 'LOGIN' })

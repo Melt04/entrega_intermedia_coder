@@ -16,6 +16,7 @@ createTableProducts(knex(mariaDBOptions))
 createTableMessage(knex(sqlite3Options))
 const yarg = require('yargs/yargs')(process.argv.slice(2))
 const PORT = yarg.argv.PORT
+const MODE = yarg.argv.MODE
 const port = PORT || '8080'
 
 const { message, products } = require('../db')
@@ -23,6 +24,8 @@ const { normalizeSchemaMessage } = require('../db/messages/normalize')
 const util = require('util')
 const mongoose = require('mongoose')
 const User = require('../models/User')
+const cluster = require('cluster')
+const numCpus = require('os').cpus().length
 
 app.set('port', port)
 /**
@@ -36,7 +39,25 @@ app.set('io', io)
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port)
+if (MODE == 'cluster') {
+  if (cluster.isMaster) {
+    console.log(`Master ${process.pid}  is running`)
+
+    for (let i = 0; i < numCpus; i++) {
+      cluster.fork()
+    }
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(`Worker ${worker.process.pid} died`)
+      cluster.fork()
+    })
+  } else {
+    console.log(process.pid)
+    server.listen(port)
+  }
+} else {
+  server.listen(port)
+}
+/* */
 server.on('error', onError)
 server.on('listening', async () => {
   try {
@@ -100,6 +121,10 @@ io.on('connection', async socket => {
 })
 function onListening () {
   console.log(`Escuchando en puerto ${port}`)
-  console.log(yarg.argv.PORT)
-  console.log(PORT)
+  console.log(`Procesos ${process.pid}`)
 }
+
+/* Ejemplos de como correr  y asignar puerto 
+
+npm run dev:pm2-fork -- -- --PORT 3036
+npm run dev:pm2-cluster -- -- --PORT 3036 */
