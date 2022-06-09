@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const yarg = require('yargs/yargs')(process.argv.slice(2))
+const compression = require('compression')
 
-router.get('/info', (req, res) => {
+router.get('/info', compression(), (req, res) => {
   const so = process.platform
   const argv = yarg.argv
   const argvkeys = Object.keys(argv)

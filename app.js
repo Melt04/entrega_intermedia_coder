@@ -3,7 +3,7 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const session = require('express-session')
-const cookieParser = require('cookie-parser')
+
 const routerProducts = require('./routes/products')
 const routerSession = require('./routes/session')
 const routerProductTest = require('./routes/product-test')
@@ -13,6 +13,15 @@ const mongoStore = require('connect-mongo')
 const mongoOptions = { useNewUrlParser: true, useUnifiedTopology: true }
 const dotenv = require('dotenv')
 const passport = require('passport')
+const winston = require('winston')
+const logger = winston.createLogger({
+  level: 'warn',
+  transports: [
+    new winston.transports.Console({ level: 'verbose' }),
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'warn.log', level: 'warn' })
+  ]
+})
 
 const { loginStrategy, signUpStrategy } = require('./authStrategy/index')
 
@@ -58,6 +67,10 @@ app.use(
 )
 app.use(passport.initialize())
 app.use(passport.session())
+app.use((req, res, next) => {
+  logger.log('info', `Path  ${req.originalUrl}, Methodo ${req.method}`)
+  next()
+})
 app.use('/', mainRouter)
 app.use('/api/random', randomRouter)
 app.use('/api/products-test', routerProductTest)
@@ -67,22 +80,19 @@ app.get('/api/getPlantilla', (req, res) => {
 app.use('/api/session', routerSession)
 
 app.use('/api/products', routerProducts)
-// catch 404 and forward to error handler
 app.use(function (req, res, next) {
   if (req.originalUrl != '/http') {
+    logger.log('warn', `Ruta inexistente ${req.originalUrl}`)
     if (req.isAuthenticated()) {
       return res.redirect('/products')
     }
     return res.redirect('/login')
   }
 })
-app.use('*', (req, res) => {
-  const url = req.originalUrl
-  res.send(url)
-})
+
 app.use(function (err, req, res, next) {
   res.locals.message = err.message
-  console.log(err.message)
+  logger.log('error', err).message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
   res.status(err.status || 500)
   res.send('Page Not Found')
