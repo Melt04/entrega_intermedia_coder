@@ -17,7 +17,7 @@ createTableMessage(knex(sqlite3Options))
 const yarg = require('yargs/yargs')(process.argv.slice(2))
 const PORT = yarg.argv.PORT
 const MODE = yarg.argv.MODE
-const port = PORT || '8080'
+const port = process.env.PORT || '8080'
 
 const { message, products } = require('../db')
 const { normalizeSchemaMessage } = require('../db/messages/normalize')
