@@ -11,8 +11,11 @@
 </head>
 
 <body>
-
-  <form method="POST" action="http://localhost:8080/products">
+  {{#if prod}}
+  <p>Seen only in production</p>
+  {{/if}}
+  {{prod}}
+  <form method="POST" action="/products">
     <div class="mb-3">
       <label>Email</label>
       <input type="text" name="username" id="name" class="form-control" />
@@ -25,7 +28,7 @@
 
   </form>
   <a href="/register" class="btn btn-primary">Registrarse</a>
-  
+
 
 </body>
 

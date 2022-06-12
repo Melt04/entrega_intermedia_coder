@@ -16,17 +16,17 @@
   <link rel="stylesheet" href="./css/style.css" />
   <div class="banner-user">
     <h1>Bienvenido{{user}} </h1>
-    <form action="http://localhost:8080/api/session/logout" method="POST">
-            <button id="bLogout">Salir</button>
+    <form action="/api/session/logout" method="POST">
+      <button id="bLogout">Salir</button>
     </form>
-    
+
   </div>
 
   <title>Alta productos</title>
 </head>
 
 <body>
-  <form method="POST" action="http://localhost:8080/api/products">
+  <form method="POST" action="/api/products">
     <legend>Alta de productos</legend>
     <label for="title">Titulo</label>
     <input type="text" id="title" name="title" />
