@@ -81,6 +81,7 @@ app.use('/api/session', routerSession)
 
 app.use('/api/products', routerProducts)
 app.use(function (req, res, next) {
+  console.log('2')
   if (req.originalUrl != '/http') {
     logger.log('warn', `Ruta inexistente ${req.originalUrl}`)
     if (req.isAuthenticated()) {
@@ -91,6 +92,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(function (err, req, res, next) {
+  console.log('here')
   res.locals.message = err.message
   logger.log('error', err).message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
