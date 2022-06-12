@@ -81,7 +81,7 @@ app.use('/api/session', routerSession)
 
 app.use('/api/products', routerProducts)
 app.use(function (req, res, next) {
-  console.log('2')
+  return res.redirect('/login')
   if (req.originalUrl != '/http') {
     logger.log('warn', `Ruta inexistente ${req.originalUrl}`)
     if (req.isAuthenticated()) {
